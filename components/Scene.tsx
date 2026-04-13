@@ -5,6 +5,7 @@ import {
   PresentationControls,
   Stage,
 } from "@react-three/drei";
+import Chair from "./Chair";
 
 const Scene = () => {
   return (
@@ -25,10 +26,7 @@ const Scene = () => {
       >
         {/* 椅子 */}
         <Stage environment="city" intensity={0.6} shadows adjustCamera={1.5}>
-          <mesh>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshNormalMaterial />
-          </mesh>
+          <Chair/>
         </Stage>
         {/* 床 */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position-y={-1}>
