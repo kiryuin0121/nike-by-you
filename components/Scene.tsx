@@ -21,7 +21,7 @@ const Scene = () => {
         speed={1.5}
         zoom={1}
         rotation={[Math.PI / 8, Math.PI / 4, 0]}
-        polar={[0, Math.PI / 3]}
+        polar={[0, Math.PI / 4]}
         azimuth={[-Infinity, Infinity]}
       >
         {/* 椅子 */}
