@@ -35,14 +35,31 @@ const Shoe = (props: JSX.IntrinsicElements['group'])=> {
   const { nodes, materials } = useGLTF('/models/shoe.glb') as unknown as GLTFResult;
   return (
     <group {...props} dispose={null}>
-      <mesh geometry={nodes.shoe.geometry} material={materials.laces} />
-      <mesh geometry={nodes.shoe_1.geometry} material={materials.mesh} />
-      <mesh geometry={nodes.shoe_2.geometry} material={materials.caps} />
-      <mesh geometry={nodes.shoe_3.geometry} material={materials.inner} />
-      <mesh geometry={nodes.shoe_4.geometry} material={materials.sole} />
-      <mesh geometry={nodes.shoe_5.geometry} material={materials.stripes} />
-      <mesh geometry={nodes.shoe_6.geometry} material={materials.band} />
-      <mesh geometry={nodes.shoe_7.geometry} material={materials.patch} />
+      {/* <mesh geometry={nodes.shoe.geometry} material={materials.laces} /> */}
+      <mesh geometry={nodes.shoe.geometry}>
+        <meshStandardMaterial {...materials.laces} color={"white"}/>
+      </mesh>
+      <mesh geometry={nodes.shoe_1.geometry} material={materials.mesh} >
+        <meshStandardMaterial {...materials.mesh} color={"white"} />
+      </mesh>
+      <mesh geometry={nodes.shoe_2.geometry} >
+        <meshStandardMaterial {...materials.caps} color={"white"} />
+      </mesh>
+      <mesh geometry={nodes.shoe_3.geometry} >
+        <meshStandardMaterial {...materials.inner} color={"white"} />
+      </mesh>
+      <mesh geometry={nodes.shoe_4.geometry} >
+        <meshStandardMaterial {...materials.sole} color={"white"} />
+      </mesh>
+      <mesh geometry={nodes.shoe_5.geometry} >
+        <meshStandardMaterial {...materials.stripes} color={"white"} />
+      </mesh>
+      <mesh geometry={nodes.shoe_6.geometry} >
+        <meshStandardMaterial {...materials.band} color={"white"} />
+      </mesh>
+      <mesh geometry={nodes.shoe_7.geometry} >
+        <meshStandardMaterial {...materials.patch} color={"white"} />
+      </mesh>
     </group>
   )
 }
