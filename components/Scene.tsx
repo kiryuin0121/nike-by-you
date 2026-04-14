@@ -6,13 +6,13 @@ import {
   Stage,
 } from "@react-three/drei";
 import Chair from "./Chair";
+import Shoe from "./Shoe";
 
 const Scene = () => {
   return (
     <>
-      <color attach="background" args={["#101010"]} />
-      <fog attach="fog" args={["#101010", 10, 20]} />
-
+      <color attach="background" args={["#f5f5f5"]} />
+      {/* <fog attach="fog" args={["#101010", 10, 20]} /> */}
       <PresentationControls
         enabled
         global
@@ -24,26 +24,12 @@ const Scene = () => {
         polar={[0, Math.PI / 4]}
         azimuth={[-Infinity, Infinity]}
       >
-        {/* 椅子 */}
         <Stage environment="city" intensity={0.6} shadows adjustCamera={1.5}>
-          <Chair/>
+          <Shoe/>
+          <group position={[0.1,0,-0.9]}>
+            <Shoe/>
+          </group>
         </Stage>
-        {/* 床 */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position-y={-2}>
-          <planeGeometry args={[170, 170]} />
-          <MeshReflectorMaterial
-            blur={[300, 100]}
-            resolution={2048}
-            mixBlur={1}
-            mixStrength={40}
-            roughness={1}
-            depthScale={1.2}
-            minDepthThreshold={0.4}
-            maxDepthThreshold={1.4}
-            color="#101010"
-            metalness={0.5}
-          />
-        </mesh>
       </PresentationControls>
     </>
   );
