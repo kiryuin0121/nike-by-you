@@ -7,6 +7,7 @@ import {
 } from "@react-three/drei";
 import Chair from "./Chair";
 import Shoe from "./Shoe";
+import { degToRad, radToDeg } from "three/src/math/MathUtils.js";
 
 const Scene = () => {
   return (
@@ -20,7 +21,7 @@ const Scene = () => {
         snap={false}
         speed={1.5}
         zoom={1}
-        rotation={[Math.PI / 8, Math.PI / 4, 0]}
+        rotation={[Math.PI / 8,degToRad(230), 0]}
         polar={[0, Math.PI / 4]}
         azimuth={[-Infinity, Infinity]}
       >
