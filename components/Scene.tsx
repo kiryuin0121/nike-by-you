@@ -125,7 +125,7 @@ const Scene = () => {
 
   useEffect(() => {
     if (!controls.current) return;
-    controls.current.setLookAt(...CAMERA_POSITIONS.mesh, false);
+    controls.current.setLookAt(...CAMERA_POSITIONS.mesh, true);
   }, []);
   useEffect(() => {
     if (!controls.current) return;
@@ -135,7 +135,7 @@ const Scene = () => {
   return (
     <>
       <color attach="background" args={["#f5f5f5"]} />
-      <Environment preset="studio" environmentIntensity={0.4} />
+      <Environment preset="studio" environmentIntensity={0.2} />
       <CameraControls ref={controls} />
       <group
         ref={shoesRef}
