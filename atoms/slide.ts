@@ -5,9 +5,9 @@ export const SHOE_PARTS: ShoePart[] = [
   "stripes",
   "laces",
   "caps",
+  "band",
   "inner",
   "sole",
-  "band",
   "patch",
 ];
 export const slideNumAtom = atom<number>(-1);
