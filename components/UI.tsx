@@ -1,8 +1,19 @@
-"use client";
+// "use client";
 
-import { setShoePartColorAtom, setShoePartTextureAtom, shoeConfigAtom, ShoePart } from "@/atoms/shoe";
-import { nextSlideAtom, prevSlideAtom, SHOE_PARTS, slideNumAtom } from "@/atoms/slide";
+import {
+  setShoePartColorAtom,
+  setShoePartTextureAtom,
+  shoeConfigAtom,
+  ShoePart,
+} from "@/atoms/shoe";
+import {
+  nextSlideAtom,
+  prevSlideAtom,
+  SHOE_PARTS,
+  slideNumAtom,
+} from "@/atoms/slide";
 import { useAtomValue, useSetAtom } from "jotai";
+import { AnimatePresence, motion } from "motion/react";
 
 const SHOE_PART_LABEL: Record<ShoePart, string> = {
   laces: "シューレース",
@@ -14,99 +25,262 @@ const SHOE_PART_LABEL: Record<ShoePart, string> = {
   band: "シュータン",
   patch: "バックタブ",
 };
+
 const COLORS = [
-  { label: "ホワイト", code: "#ffffff" },
-  { label: "ブラック", code: "#000000" },
-  { label: "グレー", code: "#d1d5db" },
-  { label: "レッド", code: "#ef4444" },
-  { label: "オレンジ", code: "#f97316" },
-  { label: "イエロー", code: "#eab308" },
-  { label: "グリーン", code: "#22c55e" },
-  { label: "シアン", code: "#06b6d4" },
-  { label: "ブルー", code: "#3b82f6" },
+  { label: "ホワイト",   code: "#ffffff" },
+  { label: "ブラック",   code: "#1a1a1a" },
+  { label: "グレー",     code: "#d1d5db" },
+  { label: "レッド",     code: "#ef4444" },
+  { label: "オレンジ",   code: "#f97316" },
+  { label: "イエロー",   code: "#eab308" },
+  { label: "グリーン",   code: "#22c55e" },
+  { label: "シアン",     code: "#06b6d4" },
+  { label: "ブルー",     code: "#3b82f6" },
   { label: "インディゴ", code: "#6366f1" },
-  { label: "パープル", code: "#a855f7" },
-  { label: "ピンク", code: "#ec4899" },
+  { label: "パープル",   code: "#a855f7" },
+  { label: "ピンク",     code: "#ec4899" },
 ];
 
-const UI = () => {
-  const shoeConfig = useAtomValue(shoeConfigAtom);
-  const setShoePartColor = useSetAtom(setShoePartColorAtom);
-  const slideNum = useAtomValue(slideNumAtom);
-  const nextSlide = useSetAtom(nextSlideAtom);
-  const prevSlide = useSetAtom(prevSlideAtom);
-  const setShoePartTexture = useSetAtom(setShoePartTextureAtom);
-  const currentPart = SHOE_PARTS[slideNum];
-  const isLeather = shoeConfig[currentPart].texture === "leather";
-  return (
-    <div
-      className={`absolute inset-0 z-10 w-screen h-screen pointer-events-none`}
-    >
-      <section
-        className={`absolute bottom-0 left-0 pointer-events-auto w-screen min-h-1/4 bg-neutral-100 space-y-8`}
-      >
-        <div className={`flex justify-center items-center gap-x-4 text-lg`}>
-          <button
-            className={`cursor-pointer`}
-            onClick={prevSlide}
-          >
-            ←
-          </button>
-          <div className={`flex gap-x-2`}>
+const INK = "#111118";
 
-          <h2>{SHOE_PART_LABEL[currentPart]}</h2>
-          <span className={`text-neutral-500`}>{slideNum+1}/{SHOE_PARTS.length}</span>
-          </div>
-          <button
-            className={`cursor-pointer`}
-            onClick={nextSlide}
+const spring = { type: "spring", stiffness: 520, damping: 36 } as const;
+const snappy = { duration: 0.12, ease: "easeOut" } as const;
+
+const UI = () => {
+  const shoeConfig         = useAtomValue(shoeConfigAtom);
+  const setShoePartColor   = useSetAtom(setShoePartColorAtom);
+  const slideNum           = useAtomValue(slideNumAtom);
+  const nextSlide          = useSetAtom(nextSlideAtom);
+  const prevSlide          = useSetAtom(prevSlideAtom);
+  const setShoePartTexture = useSetAtom(setShoePartTextureAtom);
+
+  const isCustomizing = slideNum !== -1;
+  const currentPart   = isCustomizing ? SHOE_PARTS[slideNum] : null;
+  const isLeather     = currentPart ? shoeConfig[currentPart].texture === "leather" : null;
+  const currentColor  = currentPart ? shoeConfig[currentPart].color : null;
+  const selectedLabel = COLORS.find((c) => c.code === currentColor)?.label ?? "";
+
+  return (
+    <div className={`absolute inset-0 z-10 w-screen h-screen pointer-events-none`}>
+      <AnimatePresence mode="wait">
+
+        {isCustomizing && currentPart ? (
+          <motion.div
+            key="customizing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={snappy}
+            className={`absolute inset-0`}
           >
-            →
-          </button>
-        </div>
-        
-         <div className={`flex justify-center gap-x-2`}>
-          <button
-            onClick={() => setShoePartTexture({ part: currentPart, texture: null })}
-            className={`px-4 py-1.5 rounded-full text-sm border transition-colors cursor-pointer ${
-              !isLeather
-                ? "bg-neutral-800 text-white border-neutral-800"
-                : "bg-white text-neutral-600 border-neutral-300"
-            }`}
+            {/* 商品名・価格 */}
+            <section className={`absolute top-20 left-20`}>
+              <h1
+                className={`text-xl font-bold`}
+                style={{ color: INK, textShadow: "0 0 16px #fff, 0 0 8px #fff" }}
+              >
+                MADIERO JAV 18
+              </h1>
+              <p
+                className={`text-lg font-semibold`}
+                style={{ color: INK, textShadow: "0 0 16px #fff, 0 0 8px #fff" }}
+              >
+                ¥454,072
+              </p>
+            </section>
+
+            {/* ボトムパネル */}
+            <motion.section
+              initial={{ y: 56, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 56, opacity: 0 }}
+              transition={{ ...spring, delay: 0.04 }}
+              className={`absolute bottom-0 left-0 pointer-events-auto w-screen bg-white/96 backdrop-blur-md border-t border-neutral-200/70`}
+              style={{ boxShadow: "0 -4px 28px rgba(17,17,24,0.08)" }}
+            >
+
+              {/* パーツ名ナビゲーション */}
+              <div className={`flex justify-center items-center gap-2 pt-5 pb-2`}>
+                <motion.button
+                  whileTap={{ scale: 0.84 }}
+                  transition={spring}
+                  onClick={prevSlide}
+                  className={`cursor-pointer w-8 h-8 flex items-center justify-center rounded-full border border-neutral-200 bg-white`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    strokeWidth={2.2} stroke={INK} className={`w-3.5 h-3.5`}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                  </svg>
+                </motion.button>
+
+                <div className={`min-w-32 text-center`}>
+                  <AnimatePresence mode="wait">
+                    <motion.h2
+                      key={currentPart}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={snappy}
+                      className={`text-base  tracking-tight`}
+                      style={{ color: INK }}
+                    >
+                      {SHOE_PART_LABEL[currentPart]}
+                    </motion.h2>
+                  </AnimatePresence>
+                </div>
+
+                <motion.button
+                  whileTap={{ scale: 0.84 }}
+                  transition={spring}
+                  onClick={nextSlide}
+                  className={`cursor-pointer w-8 h-8 flex items-center justify-center rounded-full border border-neutral-200 bg-white`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    strokeWidth={2.2} stroke={INK} className={`w-3.5 h-3.5`}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                  </svg>
+                </motion.button>
+              </div>
+
+              {/* ステップインジケーター */}
+              <div className={`flex justify-center gap-1.5 pb-4`}>
+                {SHOE_PARTS.map((_, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{
+                      width: i === slideNum ? 18 : 8,
+                      opacity: i === slideNum ? 1 : i < slideNum ? 0.45 : 0.2,
+                      backgroundColor: INK,
+                    }}
+                    transition={spring}
+                    className={`h-1.5 rounded-full`}
+                  />
+                ))}
+              </div>
+
+              <div className={`mx-6 h-px bg-neutral-100`} />
+
+              {/* テクスチャー切り替え */}
+              <div className={`flex justify-center gap-2 pt-3.5 pb-3`}>
+                {[
+                  { label: "メッシュ", active: !isLeather, fn: () => setShoePartTexture({ part: currentPart, texture: null }) },
+                  { label: "レザー",   active:  isLeather, fn: () => setShoePartTexture({ part: currentPart, texture: "leather" }) },
+                ].map(({ label, active, fn }) => (
+                  <motion.button
+                    key={label}
+                    onClick={fn}
+                    whileTap={{ scale: 0.93 }}
+                    transition={spring}
+                    className={`relative px-5 py-1.5 rounded-full text-xs tracking-wide border cursor-pointer overflow-hidden`}
+                    style={{ borderColor: active ? INK : "#e5e7eb" }}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="texture-fill"
+                        className={`absolute inset-0 rounded-full`}
+                        // style={{ backgroundColor: INK }}
+                        transition={spring}
+                      />
+                    )}
+                    <span className={`relative z-10`}>{label}</span>
+                  </motion.button>
+                ))}
+              </div>
+
+              {/* カラースウォッチ */}
+              <div className={`px-8 pb-7`}>
+                {/* 選択中カラー名 — 固定高さでレイアウトシフトなし */}
+                <div className={`flex justify-center mb-3 h-4`}>
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={selectedLabel}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                      className={`text-[11px] font-medium tracking-widest text-neutral-400`}
+                    >
+                      {selectedLabel}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+
+                <ul className={`flex gap-[18px] justify-center items-center`}>
+                  {COLORS.map((color) => {
+                    const isSelected = currentColor === color.code;
+                    return (
+                      <li key={color.code}>
+                        <motion.button
+                          onClick={() => setShoePartColor({ part: currentPart, color: color.code })}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={spring}
+                          className={`cursor-pointer relative w-7 h-7 rounded-full`}
+                          style={{
+                            backgroundColor: color.code,
+                            boxShadow:
+                              color.code === "#ffffff"
+                                ? "inset 0 0 0 1px #d1d5db"
+                                : "0 1px 5px rgba(17,17,24,0.20)",
+                          }}
+                        >
+                
+                          <AnimatePresence>
+                            {isSelected && (
+                              <motion.span
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.15 }}
+                                className={`absolute -inset-[5px] rounded-full border-[2px] pointer-events-none`}
+                                style={{
+                                  borderColor:
+                                    color.code === "#ffffff" ? INK : color.code,
+                                }}
+                              />
+                            )}
+                          </AnimatePresence>
+                        </motion.button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </motion.section>
+          </motion.div>
+
+        ) : (
+          /* ランディング画面 */
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={snappy}
+            className={`absolute inset-0`}
           >
-            メッシュ
-          </button>
-          <button
-            onClick={() => setShoePartTexture({ part: currentPart, texture: "leather" })}
-            className={`px-4 py-1.5 rounded-full text-sm border transition-colors cursor-pointer ${
-              isLeather
-                ? "bg-neutral-800 text-white border-neutral-800"
-                : "bg-white text-neutral-600 border-neutral-300"
-            }`}
-          >
-            レザー
-          </button>
-        </div>
-        <ul className={`flex gap-8 justify-center items-center`}>
-          {
-            COLORS.map((color)=>(
-              <li key={color.code}>
-                <button
-                onClick={() =>
-                  setShoePartColor({
-                    part: currentPart,
-                    color:color.code,
-                  })
-                }
-                style={{backgroundColor:color.code}}
-                className={`h-8 aspect-square rounded-full cursor-pointer`}
-                />
-                <p className={`text-xs`}>{color.label}</p>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+            <h1
+              className={`absolute top-1/2 left-20 -translate-y-1/2 text-stroke font-black text-white text-[13rem] leading-44 tracking-tighter`}
+            >
+              MAKE BY
+              <br />
+              YOU
+            </h1>
+
+            <motion.button
+              onClick={nextSlide}
+              // whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
+              className={`pointer-events-auto cursor-pointer absolute bottom-40 right-40 w-48 text-center p-4 border-2 rounded-xl font-semibold bg-white text-xl`}
+              style={{ color: INK }}
+            >
+              Customize
+            </motion.button>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
     </div>
   );
 };

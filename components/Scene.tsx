@@ -129,12 +129,14 @@ const Scene = () => {
   }, []);
   useEffect(() => {
     if (!controls.current) return;
-    controls.current.setLookAt(...CAMERA_POSITIONS[SHOE_PARTS[slideNum]], true);
+    const isCustomizing = slideNum!==-1;
+    const cameraPosition:CameraPosition= isCustomizing ?CAMERA_POSITIONS[SHOE_PARTS[slideNum]] : [3.1957236381604206, 3.4826551171737727, -3.0384832459845974, 0.42862287966006013, 0.5277933916825744, -0.10387158930259044]
+;
+    controls.current.setLookAt(...cameraPosition, isCustomizing);
   }, [slideNum]);
 
   return (
     <>
-      <color attach="background" args={["#f5f5f5"]} />
       <Environment preset="studio" environmentIntensity={0.2} />
       <CameraControls ref={controls} />
       <group

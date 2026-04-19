@@ -10,7 +10,7 @@ export const SHOE_PARTS: ShoePart[] = [
   "band",
   "patch",
 ];
-export const slideNumAtom = atom<number>(0);
+export const slideNumAtom = atom<number>(-1);
 export const nextSlideAtom = atom(null,(_,set) => {
   set(slideNumAtom,slideNum=>(slideNum+1)%SHOE_PARTS.length);
 });
