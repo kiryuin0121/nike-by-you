@@ -181,15 +181,15 @@ const UI = () => {
               {/* テクスチャー切り替え */}
               <div className={`flex justify-center gap-2 pt-3.5 pb-3`}>
                 {[
-                  { label: "メッシュ", active: !isLeather, fn: () => setShoePartTexture({ part: currentPart, texture: null }) },
-                  { label: "レザー",   active:  isLeather, fn: () => setShoePartTexture({ part: currentPart, texture: "leather" }) },
+                  { label: "mesh", active: !isLeather, fn: () => setShoePartTexture({ part: currentPart, texture: null }) },
+                  { label: "leather",   active:  isLeather, fn: () => setShoePartTexture({ part: currentPart, texture: "leather" }) },
                 ].map(({ label, active, fn }) => (
                   <motion.button
                     key={label}
                     onClick={fn}
                     whileTap={{ scale: 0.93 }}
                     transition={spring}
-                    className={`relative px-5 py-1.5 rounded-full text-xs tracking-wide border cursor-pointer overflow-hidden`}
+                    className={`relative px-5 py-1.5 rounded text-xs tracking-wide border cursor-pointer overflow-hidden`}
                     style={{ borderColor: active ? INK : "#e5e7eb" }}
                   >
                     {active && (
@@ -216,7 +216,7 @@ const UI = () => {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.1 }}
-                      className={`text-[11px] font-medium tracking-widest text-neutral-400`}
+                      className={`text-[11px] tracking-widest text-neutral-400`}
                     >
                       {selectedLabel}
                     </motion.p>
